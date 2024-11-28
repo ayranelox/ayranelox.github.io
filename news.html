@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Новости</title>
+  <style>
+    /* Стили для страницы с новостями */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1em 0;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .news-item {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .news-item h2 {
+      margin-top: 0;
+    }
+
+    .news-item .date {
+      font-size: 0.9em;
+      color: #777;
+      margin-bottom: 5px;
+    }
+
+    .news-item img {
+      max-width: 50%;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    .news-item .categories {
+      font-style: italic;
+      margin-top: 10px;
+    }
+
+    .whatsapp-share {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Новости</h1>
+  </header>
+
+  <div class="container">
+
+    <div id="news-container"></div>
+
+  </div>
+
+  <script>
+    const newsContainer = document.getElementById('news-container');
+
+    function addNewsItem(title, description, date, imageData, categories) {
+      const newsItem = document.createElement('div');
+      newsItem.classList.add('news-item');
+
+      const dateElement = document.createElement('div');
+      dateElement.classList.add('date');
+      dateElement.textContent = date;
+
+      const titleElement = document.createElement('h2');
+      titleElement.textContent = title;
+
+      const imageElement = document.createElement('img');
+      if (imageData) {
+        imageElement.src = imageData;
+        imageElement.alt = title;
+      }
+
+      const descriptionElement = document.createElement('p');
+      descriptionElement.innerHTML = description; // Разрешаем HTML теги в описании
+
+      const categoriesElement = document.createElement('div');
+      categoriesElement.classList.add('categories');
+      categoriesElement.textContent = "Категории: " + categories;
+
+      const whatsappShare = document.createElement('a');
+      whatsappShare.href = `whatsapp://send?text=${encodeURIComponent(title + '\n' + description)}`;
+      whatsappShare.classList.add('whatsapp-share');
+      whatsappShare.textContent = "Поделиться в WhatsApp";
+
+      newsItem.appendChild(dateElement); // Добавляем дату в начало
+      newsItem.appendChild(titleElement);
+      if (imageData) {
+        newsItem.appendChild(imageElement);
+      }
+      newsItem.appendChild(descriptionElement);
+      newsItem.appendChild(categoriesElement);
+      newsItem.appendChild(whatsappShare);
+
+      newsContainer.prepend(newsItem);
+    }
+
+    function loadNews() {
+      const storedNews = localStorage.getItem('news');
+      if (storedNews) {
+        const newsData = JSON.parse(storedNews);
+        newsData.forEach(item => {
+          addNewsItem(item.title, item.description, item.date, item.image, item.categories);
+        });
+      }
+    }
+
+    loadNews();
+  </script>
+</body>
+</html>
